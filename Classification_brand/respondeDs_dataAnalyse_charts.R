@@ -32,7 +32,7 @@ bp+ theme(legend.background = element_rect(color = "steelblue", linetype = "soli
 
 
 grid.arrange(bp, bp_pre, ncol=2)
-#########histogram for salary and age current and oredicted answers
+#########histogram for salary and age current and predicted answers
 df1 <- data.frame(catAge )
 df2 <- data.frame(catAge_pre)
 df <- rbind(df1, df)
@@ -109,14 +109,9 @@ ggplot(respDs, aes(age)) + geom_histogram(binwidth = 0.5)
 
 ggplot(respDs, aes(x=age ,y=salary)) + geom_bar()
 
-
- 
-
-
 ##  geom_line(col="red",size=1)
- s<-summary(predDs[-7,-5,])
- s
- hist(predDs[-7,-5,]$age,
+
+hist(predDs[-7,-5,]$age,
       breaks = 4,
       #       breaks=seq(0,6,by=1),
       #  breaks=c(0,1,2,3,4,5),
@@ -134,7 +129,7 @@ ggplot(respDs, aes(x=age ,y=salary)) + geom_bar()
       main="Petal width Histogram",
       xlab="Age")
  
- ??brewar
+ 
  ggplot2.histogram(data=respDs, xName='weight',
                    fill="white", color="black",
                    addMeanLine=TRUE, meanLineColor="red",

@@ -32,7 +32,7 @@ rTesting <- responseDs [-responseTrain,]
 nrow(rTraining)
 nrow(rTesting)
 
-##Caret Model Tuning
+##Caret Model Tuning with C5 Algorithm
 ctrl <- trainControl(method = "repeatedcv",
                      number = 10, 
                      repeats=1,

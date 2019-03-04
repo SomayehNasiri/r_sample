@@ -19,13 +19,13 @@ highlyCorrelated <- findCorrelation(correlationMatrix, cutoff=0.5)
 # print indexes of highly correlated attributes
 print(highlyCorrelated)
 
-#### Conver attributes to factor
+#### Convert attributes to factor
 responseDs$brand <- as.factor(responseDs$brand)
 responseDs$zipcode<-as.factor(responseDs$zipcode)
 responseDs$car<-as.factor(responseDs$car)
 responseDs$elevel<-as.ordered(responseDs$elevel)
 
-#######Exclude some columns
+#######Exclude some attributes
 testDs<- responseDs  ## subset(responseDs, select = -c(zipcode,car,elevel) )
 
 set.seed(107)
@@ -38,7 +38,7 @@ rTraining <- testDs[responseTrain,]
 rTesting <- testDs[-responseTrain,]
 nrow(rTraining)
 nrow(rTesting)
-#####cross validation
+#####cross validation eith caret
 
 metric <- "Accuracy"
 mtry <- expand.grid(mtry=c(4))
@@ -46,6 +46,7 @@ tunegrid <- expand.grid(.mtry=mtry)
 
 
 rfitControl <- trainControl(method = "repeatedcv", number = 10, repeats = 1, search = 'random')
+
 #train Random Forest Regression model
 rfFitr2 <- train(brand~.,
                  data = rTraining,
@@ -62,6 +63,7 @@ confusionMatrix(preTrain,rTraining$brand)
 preTest <- predict(rfFitr2,rTesting)
 confusionMatrix(preTest,rTesting$brand)
 
+## Predict in complete answers
 preBrand <- predict(rfFitr2,predictionDs)
 predictionDs$brand <- preBrand
 
@@ -135,7 +137,7 @@ varUsed(rf)
 p2 <- predict(rf,rTesting)
 confusionMatrix(p2,rTesting$brand)
 plot(rf)
-##To find numbaer of trees suitable for model
+##To find number of trees suitable for model
 t1 <- tuneRF(rTraining[,-7],rTraining[,7],
        stepFactor = 0.5,
        plot = TRUE,
