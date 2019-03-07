@@ -1,13 +1,18 @@
 
 if (!require(pacman)) install.packages("pacman")
-pacman::p_load( stats,caret, tidyverse,RColorBrewer,dplyr,ggplot2,plotly)
+pacman::p_load( stats,caret, tidyverse,RColorBrewer,dplyr,ggplot2,plotly,
+                scatterplot3d,Amelia,corrplot,mlbench,PerformanceAnalytics
+                ,psych,readr,GGally,doParallel,kknn,ModelMetrics,
+                randomForest,e1071,foreach,MLmetrics,FactoMineR,pROC)
 
-library(stats)
+
+
+inslibrary(stats)
 library(caret)
 library(FactoMineR)
 library(doParallel)
-
-
+library(scatterplot3d)
+library(Amelia)
 
 trainingData <- read.csv(file = "data/trainingData.csv")
 validationData <- read.csv(file = "data/validationData.csv")
@@ -59,7 +64,7 @@ write.csv(summary(wifi_training_ds), "data/new_training2.csv",
 ###Values with Variance near zero are only introducing noise in  model 
  nzv <- nearZeroVar(trainingData1,
                     saveMetrics = TRUE)
- head(nzv,5)
+ head(nzv,20)
  
  
  x <- 0.0100316  #that is the value of the variance from which we will discriminate.
@@ -137,17 +142,3 @@ write.csv(new_trainingSet, "new_training.csv",
           row.names = FALSE)
 write.csv(new_validationSet, "new_validation.csv",
           row.names = FALSE)
-###building Id vs LA and LO
-ggplot(trainingData, aes(LONGITUDE,
-                         LATITUDE),
-       colour = BUILDINGID) +
-  ggtitle("Building ID - Vs Longitud $Latitude") +
-  geom_hex() +
-  theme(legend.position = "bottom")
-
-
-###Relative Position
-ggplot(trainingData, aes(LONGITUDE,
-                         LATITUDE)) +
-  geom_point(colour = trainingData$RELATIVEPOSITION) +
-  ggtitle("Relative Position")

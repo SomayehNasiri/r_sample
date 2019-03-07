@@ -109,14 +109,15 @@ sm_ds_monthly <- select(fullDs,Year,Month,Sub_metering_1,Sub_metering_2,Sub_mete
 
 ###Summrise data based on Monthh
 #COMPRESSING DATA BY GROUPING BY MONTH AND YEAR
-sm_ds_monthly <- group_by(sm_ds_monthly, Year, Month)
+sm_ds_monthly <- group_by(sm_ds_monthly, Year, Month) %>% 
+  summarise(sm_ds_monthly, MeanGAP = mean(Global_active_power, na.rm = TRUE),
+            MeanSubm1 = mean(Sub_metering_1, na.rm = TRUE),
+            MeanSubm2 = mean(Sub_metering_2, na.rm = TRUE),
+            MeanSubm3 = mean(Sub_metering_3, na.rm = TRUE),
+            MeanSubm4 = mean(Sub_metering_4, na.rm = TRUE))
 
 #REDUCING DATA SET SIZE BY USING MEAN INSTEAD OF INDIVIDUAL OBSERVATIONS
-sm_ds_monthly <- summarise(sm_ds_monthly, MeanGAP = mean(Global_active_power, na.rm = TRUE),
-                  MeanSubm1 = mean(Sub_metering_1, na.rm = TRUE),
-                   MeanSubm2 = mean(Sub_metering_2, na.rm = TRUE),
-                   MeanSubm3 = mean(Sub_metering_3, na.rm = TRUE),
-                  MeanSubm4 = mean(Sub_metering_4, na.rm = TRUE))
+sm_ds_monthly <- 
 ## To remove year 2006
 sm_ds_monthly <- sm_ds_monthly[-1,]
 
