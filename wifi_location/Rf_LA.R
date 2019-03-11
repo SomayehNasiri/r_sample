@@ -1,6 +1,9 @@
 
-train_bl1_LA <- trainingData %>% filter(trainingData$BUILDINGID==1)
-validation_bl1_LA <- validationData %>% filter(validationData$BUILDINGID==1)
+trainingds
+validationds
+
+train_bl1_LA <- trainingds %>% filter(trainingds$BUILDINGID==1)
+validation_bl1_LA <- validationds %>% filter(validationds$BUILDINGID==1)
 
 set.seed(456)
 inTrain <- createDataPartition(y = train_bl1_LA$LATITUDE,p = .75,list = FALSE)
@@ -41,12 +44,16 @@ plot(head( varImp(Fit_bl1_rf_LA),20))
 
 
 #save the model####
-save(Fit_bl1_c5_LA, file = "results/Fit_bl1_c5_LA.rda")
+save(Fit_bl1_rf_LA, file = "results/Fit_bl1_c5_LA_p1.rda")
 
 #prediction with the model####
 
 
-
+Fit_bl1_c5_LA_Summary <- capture.output(Fit_bl1_rf_LA)
+cat("Summary", Fit_bl1_c5_LA_Summary,
+    file = "summary of Fit_bl1_c5_LA_p1.txt",
+    sep = "\n",
+    append = TRUE)
 
 
 

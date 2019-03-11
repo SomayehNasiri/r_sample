@@ -7,9 +7,9 @@ pacman::p_load( stats,caret,readr,ggplot2,mlbench,doParallel,PerformanceAnalytic
                 kknn,ModelMetrics,randomForest,e1071,foreach,MLmetrics,FactoMineR)
 
 
-library(doParallel)
 
-registerDoParallel(cores = 8)#to speed up process
+
+registerDoParallel(cores = 3)#to speed up process
 R_MAX_MEM_SIZE <- memory.limit(size = 40000)#Increase memory limit
 
 
