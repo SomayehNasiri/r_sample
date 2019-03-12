@@ -17,3 +17,16 @@ ggplot(data = real_pred_knn_bl1_LO_LA) +
                    legend.title=element_blank(),
                    legend.key=element_blank()) + facet_wrap(~floor_col)
   
+
+###Else
+resultsVSactual  <- mutate(resultsVSactual, errorsFLOOR = PredictedFLOOR_KNN - FLOOR) 
+
+PlotErrorFLOOR <- ggplot(resultsVSactual, aes(x = LONGITUDE, 
+                                              y = LATITUDE,
+                                              colour = (errorsFLOOR != 0)))+
+  geom_jitter()+
+  theme_classic() +
+  labs(title="Error Locations",
+       subtitle = "By building")
+
+gather(trainingds$)

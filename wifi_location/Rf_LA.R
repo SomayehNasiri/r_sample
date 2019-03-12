@@ -2,11 +2,11 @@
 trainingds
 validationds
 
-train_bl1_LA <- trainingds %>% filter(trainingds$BUILDINGID==1)
-validation_bl1_LA <- validationds %>% filter(validationds$BUILDINGID==1)
+train_bl1_LA <- trainingds %>% filter(trainingds$BU==1)
+validation_bl1_LA <- validationds %>% filter(validationds$BU==1)
 
 set.seed(456)
-inTrain <- createDataPartition(y = train_bl1_LA$LATITUDE,p = .75,list = FALSE)
+inTrain <- createDataPartition(y = train_bl1_LA$FL,p = .75,list = FALSE)
 
 
 
@@ -19,7 +19,7 @@ train_bl1_rf_LA <- sample_n(train_bl1_rf_LA, 2000)
 
 
 ctrl_bl1_rf_LA <- trainControl(method="repeatedcv", number=10, repeats=3)
-t_bl1_rf_LA <- system.time( Fit_bl1_rf_LA <- train(LATITUDE ~ .,
+t_bl1_rf_LA <- system.time( Fit_bl1_rf_LA <- train(LA ~ .,
                                                      data=train_bl1_rf_LA %>% 
                                                        select(starts_with("WAP"), LATITUDE),
                                                      method="rf",

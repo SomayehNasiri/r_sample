@@ -9,10 +9,11 @@ registerDoParallel(cores =3)#to speed up process
 R_MAX_MEM_SIZE <- memory.lmit(size = 40000)#Increase memory limit
 
 
- train_bl_1 <- trainingData %>% filter(trainingData$BUILDINGID==1)
- validation_bl_1 <- validationData %>% filter(validationData$BUILDINGID==1)
+ train_bl_1 <- trainingds %>% filter(trainingds$BUILDINGID==1)
+ validation_bl_1 <- validationds %>% filter(validationds$BUILDINGID==1)
 
  
+ set.seed(601)
  inTrain <- createDataPartition(y = train_bl_1$FLOOR,p = .75,list = FALSE)
  
  
