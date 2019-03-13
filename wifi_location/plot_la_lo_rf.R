@@ -47,3 +47,5 @@ plot(C5_AL_predic,test_bl_c5$FLOOR)
 real_predicred_Al <- data.frame(Predicted_Floor=C5_AL_predic,Real_Floor=test_bl_c5$FLOOR)
 
 ggplot()
+
+x <-gather(trainingData,key = "keys",value = "WAPS",1:10,na.rm = TRUE)

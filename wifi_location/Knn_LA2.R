@@ -6,6 +6,8 @@ full_validationSet
 train_bl1_LA <- trainingds %>% filter(trainingds$BUILDINGID==1)
 validation_bl1_LA <- validationds %>% filter(validationds$BUILDINGID==1)
 
+# validation_bl1_LA <- validationds %>% select(starts_with("WAP"), LATITUDE)
+
 set.seed(456)
 inTrain <- createDataPartition(y = train_bl1_LA$LATITUDE,p = .75,list = FALSE)
 
@@ -15,9 +17,6 @@ all.equal(colnames(train_bl1_LA),
 #############
 train_bl_knn_LA <- train_bl1_LA[ inTrain,]
 test_bl_knn_LA  <- train_bl1_LA[-inTrain,]
-
-#train_bl_knn_LA <- sample_n(train_bl_knn_LA, 2000)
-
 
 
 ctrl_bl1_knn_LA <- trainControl(method="repeatedcv", number=10, repeats=3)

@@ -9,7 +9,7 @@ pacman::p_load( stats,caret, tidyverse,RColorBrewer,dplyr,ggplot2,plotly,
 
 
 
-trainingData <- read.csv(file = "data/trainingData.csv")
+trainingData <- read.csv(file = "data/trainingData.csv" )
 validationData <- read.csv(file = "data/validationData.csv")
 
 str(wifi_training_ds)
@@ -57,12 +57,22 @@ write.csv(summary(wifi_training_ds), "data/new_training2.csv",
  # wifi_trainData$WAP_num <- apply(wifi_trainData[,1:520], 1,
  #                                 function(x) length(which(!is.na(x))))
  trainingData$WAP_num <- apply(trainingData[,1:520], 1,
-                                 function(x) length(which(!(x==100))))
+                                 function(x) length(which(  x < -30   & x > -80    )))# x>0
+ 
+
+
+ # trainingData$WAP_num <- apply(trainingData[,1:520], 1,
+                                 # function(x) length(which(!(x==100))))
+ 
  validationData$WAP_num <- apply(validationData[,1:520], 1,
                                function(x) length(which(!(x==100))))
  ####-Filter on hallway positions
- trainingData <- filter(trainingData, 
-                        trainingData$RELATIVEPOSITION==2)
+ # trainingData <- filter(trainingData, 
+                        # trainingData$RELATIVEPOSITION==2)
+
+
+
+ 
  
  ##create a only-features data frame with only the WAP values
  trainingData1 <- trainingData[,1:520]
@@ -81,24 +91,29 @@ write.csv(summary(wifi_training_ds), "data/new_training2.csv",
 #  
 # dim(xData)
  #### replece value less than -60 with -107 to be considered low signal
- trainingData1[trainingData1 < -90] <- -106
-  validationData1[validationData1 < -90 ] <- -106
+ trainingData1[trainingData1 < -80] <- -106
+  validationData1[validationData1 < -80 ] <- -106
  
  
  #### replece value 100 with -106 to be considered low signal
  trainingData1[trainingData1==100] <- -106
  validationData1[validationData1==100] <- -106
  
+
  
   ########Delete Rows with no variance for training data
- trainingData2 <- trainingData2[-which(apply(trainingData1, 1, var)==0),]
- trainingData1 <- trainingData1[-which(apply(trainingData1, 1, var)==0),]
+ trainingData2 <- trainingData2[ - which(apply(trainingData1, 1, var) == 0), ]
+ trainingData1 <- trainingData1[- which(apply(trainingData1, 1, var) == 0), ]
+ 
+ 
+ 
+ 
  
 
  # ########Delete Rows with no variance for validation data
  # 
- # validationData2 <- validationData2[-which(apply(validationData1, 1, var)==0),]
- # validationData1 <- validationData1[-which(apply(validationData1, 1, var)==0),]
+ validationData2 <- validationData2[ - which(apply(validationData1, 1, var)== 0), ]
+ validationData1 <- validationData1[ - which(apply(validationData1, 1, var)== 0), ]
 
  # xx <- data.frame(validationData1[-which(apply(validationData1, 1, var)==0),])
  
@@ -106,7 +121,7 @@ write.csv(summary(wifi_training_ds), "data/new_training2.csv",
 
 ###Delete cols with no variance for train data and validation data 
  
-## aa <- as.data.frame( which(apply(trainingData1, 2, var) == 0))
+ # aa <- as.data.frame( which(apply(trainingData1, 1, var) == 0))
  validationData1 <- validationData1[, - as.numeric(which(apply(trainingData1, 2, var) == 0))]
  trainingData1 <- trainingData1[ , - as.numeric(which(apply(trainingData1, 2, var) == 0))]
  
@@ -137,6 +152,12 @@ cnt <-  ncol(trainingData1)
                                     function(x) (x - min(x))/(max(x)-min(x)))))
   
 
+  trainingData1$WAP_average <- apply(trainingData1[,], 1,
+                             function(x) mean(x))
+  
+  validationData1$WAP_average <- apply(validationData1[,], 1,
+                                     function(x) mean(x))
+  
   comp <- ncol(trainingData1)  
   new_trainingSet <-
     as.data.frame(cbind(trainingData1[,1:comp],
