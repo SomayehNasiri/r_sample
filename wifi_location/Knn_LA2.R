@@ -1,10 +1,9 @@
 
-full_trainingSet 
-full_validationSet 
+new_trainingSet 
+new_validationSet
 
-
-train_bl1_LA <- trainingds %>% filter(trainingds$BUILDINGID==1)
-validation_bl1_LA <- validationds %>% filter(validationds$BUILDINGID==1)
+train_bl1_LA <- new_trainingSet %>% filter(new_trainingSet$BUILDINGID==1)
+validation_bl1_LA <- new_validationSet %>% filter(new_validationSet$BUILDINGID==1)
 
 # validation_bl1_LA <- validationds %>% select(starts_with("WAP"), LATITUDE)
 
@@ -29,15 +28,20 @@ t_bl1_knn_LA <- system.time( Fit_bl1_knn_LA <- train(LATITUDE ~ .,
                        
 )
 
-###Prediction for test set of sample partition
+###Prediction for test set 
 predict_bl1_knn_LA <- predict(Fit_bl1_knn_LA, test_bl_knn_LA, level = .95)
 bl1_test_pred <- data.frame(test_bl_knn_LA$LATITUDE,predict_bl1_knn_LA)
 
 
 postResample(predict_bl1_knn_LA,test_bl_knn_LA$LATITUDE)
 
+###Prediction for train set 
+predict_train_bl1_knn_LA <- predict(Fit_bl1_knn_LA, train_bl_knn_LA, level = .95)
+postResample(predict_train_bl1_knn_LA,train_bl_knn_LA$LATITUDE)
+
 ###Prediction for validation data
 predict_validation_bl1_knn_LA <- predict(Fit_bl1_knn_LA, validation_bl1_LA)
+postResample(predict_validation_bl1_knn_LA,validation_bl1_LA$LATITUDE)
 
 real_pred_knn_bl1_La <- data.frame(real_LA=validation_bl1_LA$LATITUDE,
                                    predicted_LA=predict_validation_bl1_knn_LA)

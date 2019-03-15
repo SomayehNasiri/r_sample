@@ -28,7 +28,7 @@ real_pred_knn_bl2_AL$real_AL <- factor(real_pred_knn_bl2_AL$real_AL)
                       x = ~realLA, 
                       y = ~realLO, 
                       z = ~predicted_AL, 
-                      size=1,
+                      size=0.5,
                       #color = , 
                       colors = c('#f29595','#ddd264','#7adf90','#9acef4','#f09ded')) %>%
   add_markers(color = ~real_AL) %>%
