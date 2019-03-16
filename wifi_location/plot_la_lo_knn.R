@@ -52,7 +52,7 @@ PlotErrorFLOOR <- ggplot(resultsVSactual, aes(x = LONGITUDE,
   labs(title="Error Locations",
        subtitle = "By building")
 
-
+########## Plot error distribution LO
 error_train_knn_LO <- rbind(train_real_pred_knn_bl0,train_real_pred_knn_bl1,train_real_pred_knn_bl2)
 error_train_knn_LO$LO_error <- error_train_knn_LO$real_LO - error_train_knn_LO$prediced_LO
 
