@@ -59,3 +59,57 @@ error_train_knn_LO$LO_error <- error_train_knn_LO$real_LO - error_train_knn_LO$p
 error_train_knn_LO$building <- as.factor(error_train_knn_LO$building) 
 ggplot(error_train_knn_LO) + geom_density(aes(x =LO_error, color=building ))
 densityplot(~ yield, group = site, data = barley, auto.key = TRUE)
+
+###########
+
+error_validation_allb_LA <- rbind(validation_real_pred_knn_bl0_la,
+                                  validation_real_pred_knn_bl1_la,
+                                  validation_real_pred_knn_bl2_la)
+
+error_validation_allb_LO <- rbind(validation_real_pred_knn_bl0_lo,
+                                  validation_real_pred_knn_bl1_lo,
+                                  validation_real_pred_knn_bl2_lo)
+
+error_validation_allb <- cbind(error_validation_allb_LA,error_validation_allb_LO)
+
+error_validation_allb$la2 <-  (error_validation_allb$real_LA - error_validation_allb$prediced_LA)  ^2 
+
+error_validation_allb$lo2 <- (error_validation_allb$real_LO - error_validation_allb$prediced_LO) ^ 2
+
+error_validation_allb$errorCol <- sqrt(error_validation_allb$la2 + error_validation_allb$lo2)
+
+error_validation_allb <- error_validation_allb[,-3]
+
+ggplot(error_validation_allb , aes(x=real_LA, y=real_LO )) 
+ + geom_density(aes(x =LO_error, color=building ))
+
+ggplot(error_validation_allb, aes(x = real_LA, y = real_LO)) +  geom_point() 
++
+  geom_smooth(method = "lm", se = FALSE, color = "lightgrey") +  # Plot regression slope
+  geom_segment(aes(xend = error_validation_allb$prediced_LA, yend =error_validation_allb$real_LO ), alpha = .2) +  # alpha to fade lines
+  geom_point() 
+  geom_point(aes(y = predicted), shape = 1) +
+  theme_bw()  # 
+
+  ggplot(error_validation_allb, aes(x =errorCol)) +  geom_histogram(bins = 30) 
+  
+  
+  
+  # COLOR
+  # High residuals (in abolsute terms) made more red on actual values.
+  ggplot(error_validation_allb) +
+    geom_point(aes(x=real_LA, y = real_LO), shape = 1) +
+    geom_point(aes(x=prediced_LA, y = prediced_LO),color="red", shape = 1) +
+    geom_segment(aes(x=real_LA, xend = prediced_LA,y=real_LO,  yend = prediced_LO), alpha = .2) +
+    scale_color_continuous(low = "white", high = "red")+
+    facet_wrap(~building)
+    
+    # > Color adjustments made here...
+    geom_point(aes(color = abs(residuals))) + # Color mapped to abs(residuals)
+    scale_color_continuous(low = "black", high = "red") +  # Colors to use here
+    guides(color = FALSE) +  # Color legend removed
+    # <
+    
+    geom_point(aes(y = predicted), shape = 1) +
+    theme_bw()
+  
