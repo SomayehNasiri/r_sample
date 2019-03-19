@@ -53,24 +53,25 @@ write.csv(summary(wifi_training_ds), "data/new_training2.csv",
  trainingData$DateTime <- anytime(trainingData$TIMESTAMP)
  validationData$DateTime <- anytime(validationData$TIMESTAMP)
  
- 
- ###################### DIM  (19937   530 ===> 14243   530) ********19285   336 ====>   13690   336
- trainingData <-  as.data.frame(trainingData %>% group_by(BUILDINGID,RELATIVEPOSITION,
-                                                                  FLOOR,USERID,
-                                                                  SPACEID,PHONEID,
-                                                                  LATITUDE,LONGITUDE,
-                                                                  TIMESTAMP,DateTime)  %>% 
-                                      summarise_at( vars(matches("WAP")) , mean ))
- 
- 
- ### To sort Data set in default situation
- 
- trainingData <- trainingData %>% select(starts_with("WAP"),LONGITUDE,LATITUDE,FLOOR,BUILDINGID, SPACEID,
-                                    RELATIVEPOSITION,USERID, 
-                                    PHONEID,TIMESTAMP,DateTime)
- 
- all.equal(colnames(trainingData),colnames(validationData))
- 
+ nrow(trainingData)
+ trainingData <- unique(trainingData)
+ # ###################### DIM  (19937   530 ===> 14243   530) ********19285   336 ====>   13690   336
+ # trainingData <-  as.data.frame(trainingData %>% group_by(BUILDINGID,RELATIVEPOSITION,
+ #                                                                  FLOOR,USERID,
+ #                                                                  SPACEID,PHONEID,
+ #                                                                  LATITUDE,LONGITUDE,
+ #                                                                  TIMESTAMP,DateTime)  %>% 
+ #                                      summarise_at( vars(matches("WAP")) , mean ))
+ # 
+ # 
+ # ### To sort Data set in default situation
+ # 
+ # trainingData <- trainingData %>% select(starts_with("WAP"),LONGITUDE,LATITUDE,FLOOR,BUILDINGID, SPACEID,
+ #                                    RELATIVEPOSITION,USERID, 
+ #                                    PHONEID,TIMESTAMP,DateTime)
+ # 
+ # all.equal(colnames(trainingData),colnames(validationData))
+ # 
  # wifi_trainData$WAP_num <- apply(wifi_trainData[,1:520], 1,
  #                                 function(x) length(which(!is.na(x))))
  # trainingData$WAP_num <- apply(trainingData[,11:531], 1,
@@ -110,8 +111,8 @@ write.csv(summary(wifi_training_ds), "data/new_training2.csv",
 #  
 # dim(xData)
  #### replece value less than -60 with -107 to be considered low signal
- trainingData1[trainingData1 < -60] <- -106
-  validationData1[validationData1 < -60 ] <- -106
+ trainingData1[trainingData1 < -62] <- -106
+  validationData1[validationData1 < -62 ] <- -106
  
  
  #### replece value 100 with -106 to be considered low signal
@@ -121,16 +122,17 @@ write.csv(summary(wifi_training_ds), "data/new_training2.csv",
 
  
   ########Delete Rows with no variance for training data nrow 14243 ===> 9165
+ #### 19300 ====> 13312
  trainingData2 <- trainingData2[ - which(apply(trainingData1, 1, var) == 0), ]
  trainingData1 <- trainingData1[- which(apply(trainingData1, 1, var) == 0), ]
  
  
- 
+ nrow(validationData1)
  
  
 
  # ########Delete Rows with no variance for validation data nrow(1111)===>754
- # 
+ # 1111 ===> 839
  validationData2 <- validationData2[ - which(apply(validationData1, 1, var)== 0), ]
  validationData1 <- validationData1[ - which(apply(validationData1, 1, var)== 0), ]
 
@@ -169,9 +171,9 @@ cnt <-  ncol(trainingData1)
                                     function(x) (x - min(x))/(max(x)-min(x)))))
   
 
-  trainingData1$WAP_average <- apply(trainingData1[,], 1,function(x) mean(x))
+  trainingData1$ average_WAP <- apply(trainingData1[,], 1,function(x) mean(x))
   
-  validationData1$WAP_average <- apply(validationData1[,], 1,function(x) mean(x))
+  validationData1$average_WAP <- apply(validationData1[,], 1,function(x) mean(x))
   
   comp <- ncol(trainingData1)
   new_trainingSet <-

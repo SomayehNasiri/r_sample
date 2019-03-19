@@ -72,6 +72,8 @@ ggplot(real_pred_knn_bl0_La, aes(x=real_pred_knn_bl0_La$real_LA,
 
 
 #########11111111 Building 1 ###########
+
+
 train_bl1_LA <- new_trainingSet %>% filter(new_trainingSet$BUILDINGID==1)
 validation_bl1_LA <- new_validationSet %>% filter(new_validationSet$BUILDINGID==1)
 
@@ -88,15 +90,14 @@ train_bl_knn_LA <- train_bl1_LA[ inTrain,]
 test_bl_knn_LA  <- train_bl1_LA[-inTrain,]
 
 
-ctrl_bl1_knn_LA <- trainControl(method="repeatedcv", number=10, repeats=3)
+ctrl_bl1_knn_LA <- trainControl(method="repeatedcv", number=10, repeats=3,allowParallel = TRUE)
 t_bl1_knn_LA <- system.time( Fit_bl1_knn_LA <- train(LATITUDE ~ .,
                                         data=train_bl_knn_LA %>% 
                                           select(starts_with("WAP"), LATITUDE),
                                         method="knn",
                                        trControl= ctrl_bl1_knn_LA,
-                                        na.action = na.omit) 
-                       
-)
+                                        na.action = na.omit))
+
 
 ###Prediction for test set 
 predict_bl1_knn_LA <- predict(Fit_bl1_knn_LA, test_bl_knn_LA, level = .95)
@@ -113,14 +114,19 @@ postResample(predict_train_bl1_knn_LA,train_bl_knn_LA$LATITUDE)
 predict_validation_bl1_knn_LA <- predict(Fit_bl1_knn_LA, validation_bl1_LA)
 postResample(predict_validation_bl1_knn_LA,validation_bl1_LA$LATITUDE)
 
+raw_data_bl1_la <- data.frame(real_LA_raw=validation_bl1_LA$LATITUDE,
+                           prediced_LA_raw=predict_validation_bl1_knn_LA,
+                           building = 1)
+
 ##### Make data frame of errors for Latitude of validation set
 validation_real_pred_knn_bl1_la <- data.frame(real_LA=validation_bl1_LA$LATITUDE,
-                                              prediced_LA=predict_validation_bl1_knn_LA,
-                                              building = 1)
+                                              prediced_LA=predict_validation_bl1_knn_LA)
 
 
-
-
+# validation_bl1_LA$predicted_LA <- predict_validation_bl1_knn_LA
+# validation_bl1_LA$predicted_LO <- predict_validation_bl1_knn_LO
+# validation_bl1_LA$errorCol <- sqrt ((validation_bl1_LA$LATITUDE - validation_bl1_LA$predicted_LA)^2 + 
+#         (validation_bl1_LA$LONGITUDE - validation_bl1_LA$predicted_LO)^2)
 
 
 
@@ -155,7 +161,7 @@ test_bl_knn_LA  <- train_bl2_LA[-inTrain,]
 
 
 
-ctrl_bl2_knn_LA <- trainControl(method="repeatedcv", number=10, repeats=3)
+ctrl_bl2_knn_LA <- trainControl(method="repeatedcv", number=10, repeats=3, allowParallel = TRUE)
 t_bl2_knn_LA <- system.time( Fit_bl2_knn_LA <- train(LATITUDE ~ .,
                                                      data=train_bl_knn_LA %>% 
                                                        select(starts_with("WAP"), LATITUDE),
@@ -179,7 +185,17 @@ postResample(predict_train_bl2_knn_LA,train_bl_knn_LA$LATITUDE)
 predict_validation_bl2_knn_LA <- predict(Fit_bl2_knn_LA, validation_bl2_LA)
 postResample(predict_validation_bl2_knn_LA,validation_bl2_LA$LATITUDE)
 
+# validation_bl1_LA$predicted_LA <- predict_validation_bl1_knn_LA
+# validation_bl1_LA$predicted_LO <- predict_validation_bl1_knn_LO
+# validation_bl1_LA$errorCol <- sqrt ((validation_bl1_LA$LATITUDE - validation_bl1_LA$predicted_LA)^2 + 
+#         (validation_bl1_LA$LONGITUDE - validation_bl1_LA$predicted_LO)^2)
 
+validation_bl2_LA$predicted_LA <- predict_validation_bl2_knn_LA
+validation_bl2_LA$predicted_LO <- predict_validation_bl2_knn_LO
+validation_bl2_LA$errorCol <- sqrt ((validation_bl2_LA$LATITUDE - validation_bl2_LA$predicted_LA)^2 +
+          (validation_bl2_LA$LONGITUDE - validation_bl2_LA$predicted_LO)^2)
+  
+  
 validation_real_pred_knn_bl2_la <- data.frame(real_LA=validation_bl2_LA$LATITUDE,
                                               prediced_LA=predict_validation_bl2_knn_LA,
                                               # prediced_LO=predict_validation_bl2_knn_LO,
